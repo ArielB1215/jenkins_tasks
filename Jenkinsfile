@@ -1,9 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Hello') {
+        stage('Show Date') {
             steps {
-                echo 'Hello, Jenkins!'
+                echo "The current date and time is: ${new Date()}"
             }
         }
     }
