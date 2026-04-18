@@ -1,10 +1,27 @@
 pipeline {
     agent any
-    
+    environment {
+        APP_NAME = 'my-app'
+        VERSION  = '1.0.0'
+    }
     stages {
-        stage('Code Checkout') {
+        stage('Global Variables') {
             steps {
-                git url: 'https://github.com/ArielB1215/jenkins_tasks.git', branch: 'main'
+                echo "App     : ${env.APP_NAME}"
+                echo "Version : ${env.VERSION}"
+            }
+        }
+        stage('Override Version') {
+            environment {
+                VERSION = '2.0.0-beta'
+            }
+            steps {
+                echo "Version inside this stage : ${env.VERSION}"
+            }
+        }
+        stage('After Override') {
+            steps {
+                echo "Version back to : ${env.VERSION}"
             }
         }
     }
