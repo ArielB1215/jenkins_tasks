@@ -5,24 +5,32 @@ pipeline {
         VERSION  = '1.0.0'
     }
     stages {
-        stage('Global Variables') {
+        stage('Write Files') {
             steps {
-                echo "App     : ${env.APP_NAME}"
-                echo "Version : ${env.VERSION}"
+                sh 'echo "App: $APP_NAME" > info.txt'
+                sh 'echo "Version: $VERSION" >> info.txt'
+                sh 'echo "Build: $BUILD_NUMBER" >> info.txt'
+                sh 'echo "Workspace: $WORKSPACE" >> info.txt'
             }
         }
-        stage('Override Version') {
-            environment {
-                VERSION = '2.0.0-beta'
-            }
+        stage('Read Files') {
             steps {
-                echo "Version inside this stage : ${env.VERSION}"
+                echo 'Contents of info.txt:'
+                sh 'cat info.txt'
             }
         }
-        stage('After Override') {
+        stage('Explore Workspace') {
             steps {
-                echo "Version back to : ${env.VERSION}"
+                echo 'Everything in the workspace:'
+                sh 'ls -la $WORKSPACE'
+                echo "Full path of our file:"
+                sh 'realpath info.txt'
             }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'info.txt'
         }
     }
 }
